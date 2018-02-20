@@ -14,9 +14,9 @@ function getLogger(module) {
       new winston.transports.Console({
         colorize: true,
         level: ENV === 'development' ? 'debug' : 'error',
-        label: pathToModule,
-      }),
-    ],
+        label: pathToModule
+      })
+    ]
   });
 }
 

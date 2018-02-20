@@ -13,14 +13,14 @@
         }
       },
       "windows": {
-        "command": "npm start"
+        "command": "yarn start"
       },
       "problemMatcher": [
         "$go"
       ],
       "group": {
         "kind": "build",
-        "isDefault": true,
+        "isDefault": true
       }
     },
     {
@@ -33,7 +33,7 @@
         }
       },
       "windows": {
-        "command": "npm start"
+        "command": "yarn start"
       },
       "problemMatcher": [
         "$go"
