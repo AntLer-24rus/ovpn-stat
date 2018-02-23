@@ -1,12 +1,13 @@
 {
-  "name": "OVPN-Stat",
+  "name": "ovpn-stat",
   "version": "0.0.1",
   "description": "OpenVPN statistic view",
   "main": "app.js",
   "author": "AntLer <antler@inbox.ru>",
   "license": "MIT",
   "scripts": {
-    "start": "node backend/app.js"
+    "start": "node backend/app.js",
+    "nodemon": "nodemon backend/app.js"
   },
   "devDependencies": {
     "eslint": "^4.14.0",
@@ -16,7 +17,11 @@
     "prettier": "^1.9.2"
   },
   "eslintConfig": {
-    "extends": ["airbnb-base", "prettier"]
+    "root": true,
+    "extends": ["airbnb-base", "prettier"],
+    "env": { 
+      "node": true 
+    }
   },
   "dependencies": {
     "body-parser": "^1.18.2",

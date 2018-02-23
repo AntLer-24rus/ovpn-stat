@@ -13,7 +13,7 @@
         }
       },
       "windows": {
-        "command": "yarn start"
+        "command": "yarn nodemon"
       },
       "problemMatcher": [
         "$go"

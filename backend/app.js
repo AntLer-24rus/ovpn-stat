@@ -80,11 +80,12 @@ app.get('/status', (req, res) => {
 });
 
 app.get('/error', (req, res) => {
-  antler();
+  antler();/* eslint-disable-line */
+  res.end();
 });
 
 app.use((req, res, next) => {
-  next();
+  next(404);
 });
 
 // Для включения jQuery необходимо использоавть webpack
@@ -93,7 +94,7 @@ app.use((req, res, next) => {
 app.use(serveStatic(path.join(__dirname, 'public')));
 
 // Обработчик ошибок
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   res.status(err.status || 500).render('error', {
     title: 'Ошибка',
     message: err.message
