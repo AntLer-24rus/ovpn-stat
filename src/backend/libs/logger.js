@@ -1,10 +1,10 @@
-const winston = require('winston');
-const path = require('path');
+const winston = require("winston");
+const path = require("path");
 
 const ENV = process.env.NODE_ENV;
 
-function getLogger(module) {
-  const pathToModule = module.filename
+function getLogger(filename) {
+  const pathToModule = filename
     .split(path.sep)
     .slice(-2)
     .join(path.sep);
@@ -13,11 +13,11 @@ function getLogger(module) {
     transports: [
       new winston.transports.Console({
         colorize: true,
-        level: ENV === 'development' ? 'debug' : 'error',
+        level: ENV === "development" ? "debug" : "error",
         label: pathToModule
       })
     ]
   });
 }
-
+// exports.getLogger = getLogger;
 module.exports = getLogger;
