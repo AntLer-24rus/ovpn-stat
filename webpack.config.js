@@ -1,26 +1,27 @@
-"use struct";
+'use struct';
 
-const NODE_ENV = process.env.NODE_ENV || "production";
-const webpack = require("webpack");
-const path = require("path");
-const fs = require("fs");
+// const NODE_ENV = process.env.NODE_ENV || 'production';
+const webpack = require('webpack');
+const path = require('path');
+const fs = require('fs');
 
 const nodeModules = {};
 fs
-  .readdirSync("node_modules")
-  .filter(x => [".bin"].indexOf(x) === -1)
+  .readdirSync('node_modules')
+  .filter(x => ['.bin'].indexOf(x) === -1)
   .forEach(mod => {
     nodeModules[mod] = `commonjs ${mod}`;
   });
 
 module.exports = {
-  context: path.join(__dirname, "src/backend"),
-  entry: { app: "./app.js" },
-  target: "node",
+  context: path.join(__dirname, 'src/backend'),
+  entry: { app: './app.js' },
+  target: 'node',
   output: {
-    path: path.join(__dirname, "distr"),
-    filename: "[name].js",
-    publicPath: "/"
+    path: path.join(__dirname, 'distr'),
+    filename: '[name].js',
+    library: '[name]',
+    publicPath: '/'
   },
 
   node: {
@@ -33,7 +34,7 @@ module.exports = {
     __dirname: false
   },
 
-  watch: NODE_ENV === "dewelopment",
+  watch: true, // NODE_ENV === 'dewelopment',
 
   watchOptions: {
     aggregateTimeout: 100
@@ -42,10 +43,32 @@ module.exports = {
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify("development")
+      'process.env.NODE_ENV': JSON.stringify('development')
     })
   ],
   externals: nodeModules,
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      },
+      {
+        test: /\.pug$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'pug-loader',
+          options: {}
+        }
+      }
+    ]
+  },
   //   node: {
   //     fs: "empty"
   //   },
@@ -59,8 +82,8 @@ module.exports = {
   //   }
 
   resolve: {
-    modules: [path.resolve(__dirname, "src/backend/libs"), "node_modules"],
-    extensions: [".js"]
+    modules: [path.resolve(__dirname, 'src/backend/libs'), 'node_modules'],
+    extensions: ['.js']
   }
   //   resolveLoader: {
   //     modules: ["node_modules"],
