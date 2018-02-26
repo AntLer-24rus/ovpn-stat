@@ -1,16 +1,25 @@
-//  'use strickt';
+'use strickt';
 
 const express = require('express');
 const config = require('./libs/config');
-const log = require('./libs/logger')(module);
+const log = require('./libs/logger')(__filename);
 const patch = require('path');
 const morgan = require('morgan');
 const serveStatic = require('serve-static');
 const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
+const util = require('util');
 
 const app = express();
+
+function HttpEror(status, message) {
+  this.status = status;
+  this.message = message;
+  // Error.captureStackTrace(this, HttpEror);
+}
+util.inherits(HttpEror, Error);
+HttpEror.prototype.name = 'HttpError';
 
 function ReadStat(callback) {
   fs.readFile(config.get('OpenVPN-StatPath'), 'utf8', (err, contents) => {
@@ -59,17 +68,20 @@ function ReadStat(callback) {
     });
   });
 }
-
-app.set('views', patch.join(__dirname, 'views'));
+// Шаблонизатор
+app.set('views', patch.join(__dirname, 'views/partial'));
 app.set('view engine', 'pug');
+// Логирование
 app.use(morgan('dev'));
+// Отдача статики
 app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
 
 // Описание использования body-parser https://github.com/expressjs/body-parser
 
 app.get('/', (req, res) => {
+  res.append('Cache-Control', 'no-cache');
   ReadStat(content => {
-    res.render('partial/page-stat', content);
+    res.render('page-stat', content);
   });
 });
 
@@ -79,28 +91,48 @@ app.get('/status', (req, res) => {
   });
 });
 
-app.get('/error', (req, res) => {
-  antler();/* eslint-disable-line */
-  res.end();
-});
+// app.get('/error', (req, res) => {
+//   antler(); /* eslint-disable-line */
+//   res.end();
+// });
+
+// app.use('/forbidden', (req, res, next) => {
+//   next(new HttpEror(403, 'Достап запрещен!!!'));
+// });
 
 app.use((req, res, next) => {
-  next(404);
+  next(new HttpEror(404, `Упс!! Страница ${req.originalUrl} не найдена...`));
 });
 
 // Для включения jQuery необходимо использоавть webpack
 
-// Отдача статики
-app.use(serveStatic(path.join(__dirname, 'public')));
-
 // Обработчик ошибок
-app.use((err, req, res) => {
-  res.status(err.status || 500).render('error', {
-    title: 'Ошибка',
-    message: err.message
-  });
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  log.debug(
+    `Ошибка [${err.name}] сообщение: [${err.message}]${err.stack ? `\n    ${err.stack}` : ``}`
+  );
+  switch (err.constructor) {
+    case HttpEror:
+      res.status(err.status).render('httperror', {
+        title: 'Страница не найдена',
+        status: err.status,
+        message: err.message
+      });
+      break;
+    default:
+      if (app.get('env') === 'development') {
+        res.status(500).render('error', {
+          title: 'Ошибка',
+          message: err.message,
+          stack: err.stack
+        });
+      } else {
+        res.sendStatus(500);
+      }
+  }
 });
 
 app.listen(config.get('port'), config.get('hostname'), () => {
-  log.info(`App listening ${config.get('hostname')} on port ${config.get('port')}`);
+  log.info(`App listening [http://${config.get('hostname')}:${config.get('port')}]`);
 });
