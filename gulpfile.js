@@ -7,7 +7,7 @@ let ndstream;
 gulp.task('browser-sync', () => {
   browserSync.init(null, {
     proxy: 'http://localhost:80',
-    port: 7000,
+    port: 7000
   });
   browserSync.watch('backend/views/**/*.pug').on('change', browserSync.reload);
   browserSync.watch('backend/**/*.js').on('change', () => {

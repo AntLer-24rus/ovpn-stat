@@ -5,7 +5,7 @@ const config = require('./libs/config');
 const log = require('./libs/logger')(__filename);
 const patch = require('path');
 const morgan = require('morgan');
-const serveStatic = require('serve-static');
+// const serveStatic = require('serve-static');
 const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
@@ -35,9 +35,7 @@ function ReadStat(callback) {
         RealPort: result[3],
         BytesReceived: result[4],
         BytesSent: result[5],
-        ConnectedSince: moment(result[6], 'ddd MMM DD HH:mm:ss YYYY').format(
-          'DD.MM.YYYY HH:mm:ss Z'
-        )
+        ConnectedSince: moment(result[6], 'ddd MMM DD HH:mm:ss YYYY').format('DD.MM.YYYY HH:mm:ss')
       });
       result = regexp1.exec(contents);
     }
