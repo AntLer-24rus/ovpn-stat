@@ -36,8 +36,8 @@ function ReadStat(callback) {
         BytesReceived: result[4],
         BytesSent: result[5],
         ConnectedSince: moment(result[6], 'ddd MMM DD HH:mm:ss YYYY').format(
-          'DD.MM.YYYY HH:mm:ss Z'
-        )
+          'DD.MM.YYYY HH:mm:ss Z',
+        ),
       });
       result = regexp1.exec(contents);
     }
@@ -49,7 +49,7 @@ function ReadStat(callback) {
         CommonName: result[2],
         RealAddress: result[3],
         RealPort: result[4],
-        LastRef: moment(result[5], 'ddd MMM DD HH:mm:ss YYYY').format('DD.MM.YYYY HH:mm:ss Z')
+        LastRef: moment(result[5], 'ddd MMM DD HH:mm:ss YYYY').format('DD.MM.YYYY HH:mm:ss Z'),
       });
       result = regexp2.exec(contents);
     }
@@ -64,7 +64,7 @@ function ReadStat(callback) {
     callback({
       Update,
       ClientList,
-      RoutingTable
+      RoutingTable,
     });
   });
 }
@@ -91,6 +91,9 @@ app.get('/status', (req, res) => {
   });
 });
 
+app.get('/favicon.ico', (req, res) => {
+  res.sendStatus(200);
+});
 // app.get('/error', (req, res) => {
 //   antler(); /* eslint-disable-line */
 //   res.end();
@@ -110,14 +113,14 @@ app.use((req, res, next) => {
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   log.debug(
-    `Ошибка [${err.name}] сообщение: [${err.message}]${err.stack ? `\n    ${err.stack}` : ``}`
+    `Ошибка [${err.name}] сообщение: [${err.message}]${err.stack ? `\n    ${err.stack}` : ``}`,
   );
   switch (err.constructor) {
     case HttpEror:
       res.status(err.status).render('httperror', {
         title: 'Страница не найдена',
         status: err.status,
-        message: err.message
+        message: err.message,
       });
       break;
     default:
@@ -125,7 +128,7 @@ app.use((err, req, res, next) => {
         res.status(500).render('error', {
           title: 'Ошибка',
           message: err.message,
-          stack: err.stack
+          stack: err.stack,
         });
       } else {
         res.sendStatus(500);
