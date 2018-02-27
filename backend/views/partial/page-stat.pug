@@ -2,37 +2,38 @@ extends ../layout/default
 
 //- block scripts
 //-   script(src='frontend/test.js')
-block content
-  h2 Последнее обновление в: #{Update}
-  h3 Список клиентов
-  table(id='client')
-    thead
-      tr
-        th Common Name
-        th Real Address
-        th Bytes Received
-        th Bytes Sent
-        th Connected Since
-    tbody
-      each row in ClientList
+block content  
+  div.container
+    h2 Последнее обновление в: #{Update}
+    h3 Список клиентов
+    table.table.table-hover(id='client')
+      thead
         tr
-          td #{row.CommonName}
-          td #{row.RealAddress}:#{row.RealPort}
-          td #{row.BytesReceived}
-          td #{row.BytesSent}
-          td #{row.ConnectedSince}
-  h3 Таблица маршрутов
-  table(id='routing')
-    thead
-      tr
-        th Virtual Address
-        th Common Name
-        th Real Address
-        th Last Ref
-    tbody
-      each row in RoutingTable
+          th(scope='col') Имя
+          th(scope='col') Реальный адрес
+          th(scope='col') Принято
+          th(scope='col') Передано
+          th(scope='col') Подключился
+      tbody
+        each row in ClientList
+          tr
+            td #{row.CommonName}
+            td #{row.RealAddress}:#{row.RealPort}
+            td #{row.BytesReceived}
+            td #{row.BytesSent}
+            td #{row.ConnectedSince}
+    h3 Таблица маршрутов
+    table.table.table-hover(id='routing')
+      thead
         tr
-          td #{row.VirtualAddress}
-          td #{row.CommonName}
-          td #{row.RealAddress}:#{row.RealPort}
-          td #{row.LastRef}
+          th(scope='col') Виртуальный адрес
+          th(scope='col') Имя
+          th(scope='col') Реальный адрес
+          th(scope='col') Обновлено
+      tbody
+        each row in RoutingTable
+          tr
+            td #{row.VirtualAddress}
+            td #{row.CommonName}
+            td #{row.RealAddress}:#{row.RealPort}
+            td #{row.LastRef}
