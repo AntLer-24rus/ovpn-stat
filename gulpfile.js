@@ -1,7 +1,15 @@
 const gulp = require('gulp');
+const sass = require('gulp-sass');
 const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync').create();
 // const pug = require('gulp-pug');
+
+gulp.task('sass', () =>
+  gulp
+    .src('./frontend/scss/**/*.scss')
+    .pipe(sass({ includePaths: ['./node_modules/bootstrap/scss'] }).on('error', sass.logError))
+    .pipe(gulp.dest('./public/css'))
+);
 
 let ndstream;
 gulp.task('browser-sync', () => {
