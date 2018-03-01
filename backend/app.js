@@ -33,8 +33,8 @@ function ReadStat(callback) {
         CommonName: result[1],
         RealAddress: result[2],
         RealPort: result[3],
-        BytesReceived: result[4],
-        BytesSent: result[5],
+        BytesReceived: (Number(result[4]) / 1024 / 1024).toFixed(2),
+        BytesSent: (Number(result[5]) / 1024 / 1024).toFixed(2),
         ConnectedSince: moment(result[6], 'ddd MMM DD HH:mm:ss YYYY').format('DD.MM.YYYY HH:mm:ss')
       });
       result = regexp1.exec(contents);
@@ -47,14 +47,15 @@ function ReadStat(callback) {
         CommonName: result[2],
         RealAddress: result[3],
         RealPort: result[4],
-        LastRef: moment(result[5], 'ddd MMM DD HH:mm:ss YYYY').format('DD.MM.YYYY HH:mm:ss Z')
+        LastRef: moment(result[5], 'ddd MMM DD HH:mm:ss YYYY').format('DD.MM.YYYY HH:mm:ss')
       });
       result = regexp2.exec(contents);
     }
     result = regexp3.exec(contents);
-    let Update;
+    let Update = {};
     if (result != null) {
-      Update = moment(result[1], 'ddd MMM DD HH:mm:ss YYYY').format('DD.MM.YYYY HH:mm:ss Z');
+      Update.date = moment(result[1], 'ddd MMM DD HH:mm:ss YYYY').format('DD.MM.YYYY');
+      Update.time = moment(result[1], 'ddd MMM DD HH:mm:ss YYYY').format('HH:mm:ss');
     } else {
       Update = null;
     }

@@ -1,3 +1,4 @@
+const del = require('del');
 const gulp = require('gulp');
 const sass = require('gulp-sass');
 const nodemon = require('gulp-nodemon');
@@ -7,9 +8,15 @@ const browserSync = require('browser-sync').create();
 gulp.task('sass', () =>
   gulp
     .src('./frontend/scss/**/*.scss')
-    .pipe(sass({ includePaths: ['./node_modules/bootstrap/scss'] }).on('error', sass.logError))
+    .pipe(
+      sass({
+        includePaths: ['./node_modules/bootstrap/scss', 'frontend/scss']
+      }).on('error', sass.logError)
+    )
     .pipe(gulp.dest('./public/css'))
 );
+
+gulp.task('clean', () => del(['public']));
 
 let ndstream;
 gulp.task('browser-sync', () => {
@@ -17,13 +24,14 @@ gulp.task('browser-sync', () => {
     proxy: 'http://localhost:80',
     port: 7000
   });
-  browserSync.watch('backend/views/**/*.pug').on('change', browserSync.reload);
-  browserSync.watch('backend/**/*.js').on('change', () => {
-    ndstream.emit('restart');
-  });
+  browserSync.watch('public/**/*.*').on('change', browserSync.reload);
+  // browserSync.watch('backend/views/**/*.pug').on('change', browserSync.reload);
+  // browserSync.watch('backend/**/*.js').on('change', () => {
+  //   ndstream.emit('restart');
+  // });
 });
 gulp.task('nodemon', () => {
-  ndstream = nodemon({ script: 'backend/app.js', watch: '/backend/', ext: 'js json' });
+  ndstream = nodemon({ script: 'backend/app.js', watch: '/backend/', ext: 'js json pug' });
   ndstream.on('restart', browserSync.reload);
 });
 gulp.task('dev', gulp.parallel('nodemon', 'browser-sync'));

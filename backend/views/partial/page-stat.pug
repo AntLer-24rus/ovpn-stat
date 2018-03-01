@@ -3,7 +3,7 @@ extends ../layout/default
 //- block scripts
 //-   script(src='frontend/test.js')
 block content  
-  h2 Последнее обновление в: #{Update}
+  h2 Последнее обновление #{Update.date} в: #{Update.time}
   h3 Список клиентов
   table.table.table-hover(id='client')
     thead
