@@ -3,7 +3,45 @@ const gulp = require('gulp');
 const sass = require('gulp-sass');
 const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync').create();
+const scp = require('gulp-scp2');
+const fs = require('fs');
+const SSH = require('gulp-ssh');
 // const pug = require('gulp-pug');
+
+const ssh = new SSH({
+  ignoreErrors: true,
+  sshConfig: {
+    host: 'antler24.ru',
+    port: 20531,
+    username: 'git',
+    privateKey: fs.readFileSync('../../.ssh/id_rsa')
+  }
+});
+
+gulp.task('ssh', () =>
+  ssh.exec(['cd ovpn-stat && chmod +x run.sh && ./run.sh']).on('ssh2Data', arg => {
+    console.log('result: ' + arg);
+  })
+);
+
+gulp.task('deploy', () =>
+  gulp
+    .src(['{backend,frontend,public}/**/*.*', 'package.json', 'run.sh'])
+    .pipe(
+      scp({
+        host: 'antler24.ru',
+        port: 20531,
+        username: 'git',
+        // password: 'git205317',
+        publicKey: fs.readFileSync('../../.ssh/id_rsa.pub', 'UTF-8'),
+        privateKey: fs.readFileSync('../../.ssh/id_rsa', 'UTF-8'),
+        dest: 'ovpn-stat'
+      })
+    )
+    .on('error', err => {
+      console.log(err);
+    })
+);
 
 gulp.task('sass', () =>
   gulp
