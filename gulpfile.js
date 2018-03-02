@@ -6,23 +6,13 @@ const browserSync = require('browser-sync').create();
 const scp = require('gulp-scp2');
 const fs = require('fs');
 const SSH = require('gulp-ssh');
+const path = require('path');
+
+const webpackStream = require('webpack-stream');
+const named = require('vinyl-named');
+
+const webpack = webpackStream.webpack;
 // const pug = require('gulp-pug');
-
-const ssh = new SSH({
-  ignoreErrors: true,
-  sshConfig: {
-    host: 'antler24.ru',
-    port: 20531,
-    username: 'git',
-    privateKey: fs.readFileSync('../../.ssh/id_rsa')
-  }
-});
-
-gulp.task('ssh', () =>
-  ssh.exec(['cd ovpn-stat && chmod +x run.sh && ./run.sh']).on('ssh2Data', arg => {
-    console.log('result: ' + arg);
-  })
-);
 
 gulp.task('deploy', () =>
   gulp
@@ -56,7 +46,30 @@ gulp.task('sass', () =>
 
 gulp.task('clean', () => del(['public']));
 
-let ndstream;
+gulp.task('webpack', () => {
+  const options = {
+    watch: true,
+    devtool: 'cheap-module-inline-source-map',
+    module: {
+      loaders: [
+        {
+          test: /\.js&/,
+          include: path.join(__dirname, 'frontend'),
+          loader: 'babel?presets[]=es2015'
+        }
+      ]
+    },
+    plugins: [new webpack.NoErrorsPlugin()]
+  };
+  return gulp
+    .src('frontend/js/**/*.js')
+    .pipe(named())
+    .pipe(webpackStream(options))
+    .pipe(gulp.dest('public/js'));
+});
+
+gulp.task('build', gulp.series('clean', 'sass'));
+
 gulp.task('browser-sync', () => {
   browserSync.init(null, {
     proxy: 'http://localhost:80',
@@ -69,8 +82,10 @@ gulp.task('browser-sync', () => {
   // });
 });
 gulp.task('nodemon', () => {
-  ndstream = nodemon({ script: 'backend/app.js', watch: '/backend/', ext: 'js json pug' });
-  ndstream.on('restart', browserSync.reload);
+  nodemon({ script: 'backend/app.js', watch: '/backend/', ext: 'js json pug' }).on(
+    'restart',
+    browserSync.reload
+  );
 });
 gulp.task('dev', gulp.parallel('nodemon', 'browser-sync'));
 

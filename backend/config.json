@@ -1,5 +1,5 @@
 {
   "port": 80,
   "hostname": "localhost",
-  "OpenVPN-StatPath": "C:\\Users\\satys\\node_project\\ovpn-stat\\openvpn-status.log"
+  "OpenVPN-StatPath": "C:\\Users\\Антон\\Documents\\ovpnstat\\openvpn-status.log"
 }
