@@ -52,12 +52,13 @@ function ReadStat(callback) {
       result = regexp2.exec(contents);
     }
     result = regexp3.exec(contents);
-    let Update = {};
+    const Update = {};
     if (result != null) {
       Update.date = moment(result[1], 'ddd MMM DD HH:mm:ss YYYY').format('DD.MM.YYYY');
       Update.time = moment(result[1], 'ddd MMM DD HH:mm:ss YYYY').format('HH:mm:ss');
     } else {
-      Update = null;
+      Update.date = null;
+      Update.time = null;
     }
 
     callback({
