@@ -16,7 +16,7 @@ do
       else
         echo -e "${txtred}Failed to checkout DEVELOPER SERVER!${txtrst}"
       fi
-
+      cd $WORK_TREE
       npm install
 
     ;;
