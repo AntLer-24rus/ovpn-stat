@@ -9,17 +9,17 @@ echo "========================================"
 while read oldrev newrev ref
 do
   case $ref in
-    refs/heads/master )
-
-      git --work-tree=$WORK_TREE checkout -f master
+    refs/heads/master)
+      git --work-tree=$WORK_TREE checkout -f master > /dev/null
       if [ $? -eq 0 ]; then
         echo -e "${txtgrn}DEVELOPER SERVER successfully updated${txtrst}"
       else
         echo -e "${txtred}Failed to checkout DEVELOPER SERVER!${txtrst}"
       fi
+      npm install
     ;;
-    * )
-    echo "NO UPDATES FOR $oldrev"
+    *)
+    echo -e "NO UPDATES FOR $oldrev"
     ;;
   esac
 done
