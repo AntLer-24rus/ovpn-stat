@@ -16,7 +16,9 @@ do
       else
         echo -e "${txtred}Failed to checkout DEVELOPER SERVER!${txtrst}"
       fi
+
       npm install
+
     ;;
     *)
     echo -e "NO UPDATES FOR $oldrev"
