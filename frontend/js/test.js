@@ -8,7 +8,7 @@ socket.on('msg3', data => {
   socket.emit('msg3', 'ответ получен');
 });
 socket.on('stat-change', data => {
-  console.log('Принял изменения, обновляю талицы...');
+  console.log('Принял изменения, обновляю талицы....');
   $('#client > tbody > tr').remove();
   $('#routing > tbody > tr').remove();
   $('#udate')
