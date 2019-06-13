@@ -1,17 +1,25 @@
 'use strickt';
 
+process.env.NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'prodaction';
+
 const express = require('express');
 const config = require('./libs/config');
-const log = require('./libs/logger')(__filename);
+const logger = require('./libs/logger');
 const patch = require('path');
-const morgan = require('morgan');
+// const morgan = require('morgan');
 // const serveStatic = require('serve-static');
 const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
 const util = require('util');
+const chokidar = require('chokidar');
 
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
+const log = logger.logger(__filename);
+const mwLog = logger.middlewareLogger(`http://${config.get('hostname')}:${config.get('port')}`);
 
 function HttpEror(status, message) {
   this.status = status;
@@ -23,9 +31,13 @@ HttpEror.prototype.name = 'HttpError';
 
 function ReadStat(callback) {
   fs.readFile(config.get('OpenVPN-StatPath'), 'utf8', (err, contents) => {
+    if (err) {
+      log.error(err);
+    }
+
     const regexp1 = /^([a-zA-Z0-9_-]*),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{2,5}),(\d*),(\d*),((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}\s\d{4})/gm;
-    const regexp2 = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),([a-zA-Z0-9_-]*),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{2,5}),((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}\s\d{4})/gm;
-    const regexp3 = /^Updated,((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}\s\d{4})/gm;
+    const regexp2 = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),([a-zA-Z0-9_-]*),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{2,5}),((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}\s\d{4})/gm;
+    const regexp3 = /^Updated,((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}\s\d{4})/gm;
     let result = regexp1.exec(contents);
     const ClientList = [];
     while (result) {
@@ -72,7 +84,34 @@ function ReadStat(callback) {
 app.set('views', patch.join(__dirname, 'views/partial'));
 app.set('view engine', 'pug');
 // Логирование
-app.use(morgan('dev'));
+
+// app.use(morgan('dev'));
+app.use(mwLog);
+
+// fs.watchFile(config.get('OpenVPN-StatPath'), () => {
+//   log.debug('Файл изменился');
+// });
+
+io.on('connection', socket => {
+  const watcher = chokidar
+    .watch(config.get('OpenVPN-StatPath'))
+    .on('change', () => {
+      log.debug('Файл обновился, читаю изменения...');
+      ReadStat(data => {
+        log.debug('Отправка изменений клиенту');
+        socket.emit('stat-change', data);
+      });
+    })
+    .on('ready', () => {
+      log.debug('Началось отслеживание файла');
+    });
+
+  socket.on('disconnect', () => {
+    watcher.unwatch();
+    log.debug('Закончилось отслеживание файла');
+  });
+});
+
 // Отдача статики
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
@@ -136,6 +175,12 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(config.get('port'), config.get('hostname'), () => {
-  log.info(`App listening [http://${config.get('hostname')}:${config.get('port')}]`);
+server.listen(config.get('port'), config.get('hostname'), () => {
+  let msg;
+  if (process.env.NODE_ENV.trim() === 'development') {
+    msg = '\x1b[31mПриложение запущено в режиме разработки\x1b[0m и слушает:';
+  } else {
+    msg = 'Приложение слушает:';
+  }
+  log.info(`${msg} \x1b[36m[http://${config.get('hostname')}:${config.get('port')}]\x1b[0m`);
 });

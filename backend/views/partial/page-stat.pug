@@ -1,9 +1,12 @@
 extends ../layout/default
 
-//- block scripts
-//-   script(src='frontend/test.js')
-block content  
-  h2 Последнее обновление #{Update.date} в: #{Update.time}
+block scripts
+  //- script(src='public/js/jquery.min.js')
+  script(src='/socket.io/socket.io.js')
+  script(src='public/js/test.js')
+
+block content
+  h2 Последнее обновление #[span(id='udate') #{Update.date}] в: #[span(id='utime') #{Update.time}]
   h3 Список клиентов
   table.table.table-hover(id='client')
     thead

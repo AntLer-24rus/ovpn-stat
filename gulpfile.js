@@ -5,24 +5,11 @@ const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync').create();
 const scp = require('gulp-scp2');
 const fs = require('fs');
-const SSH = require('gulp-ssh');
-// const pug = require('gulp-pug');
 
-const ssh = new SSH({
-  ignoreErrors: true,
-  sshConfig: {
-    host: 'antler24.ru',
-    port: 20531,
-    username: 'git',
-    privateKey: fs.readFileSync('../../.ssh/id_rsa')
-  }
-});
+const path = require('path');
 
-gulp.task('ssh', () =>
-  ssh.exec(['cd ovpn-stat && chmod +x run.sh && ./run.sh']).on('ssh2Data', arg => {
-    console.log('result: ' + arg);
-  })
-);
+const webpackStream = require('webpack-stream');
+const named = require('vinyl-named');
 
 gulp.task('deploy', () =>
   gulp
@@ -56,27 +43,52 @@ gulp.task('sass', () =>
 
 gulp.task('clean', () => del(['public']));
 
-let ndstream;
+gulp.task('webpack', () => {
+  const options = {
+    // watch: true,
+    devtool: 'cheap-module-inline-source-map',
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          include: path.join(__dirname, 'frontend'),
+          loader: 'babel-loader?presets[]=babel-preset-env'
+        }
+      ]
+    },
+    plugins: [
+      new webpackStream.webpack.NoEmitOnErrorsPlugin(),
+      new webpackStream.webpack.ProvidePlugin({
+        $: 'jquery/dist/jquery.min.js',
+        'window.$': 'jquery/dist/jquery.min.js'
+      })
+    ]
+  };
+  return gulp
+    .src('frontend/js/**/*.js')
+    .pipe(named())
+    .pipe(webpackStream(options))
+    .pipe(gulp.dest('public/js'));
+});
+
+gulp.task('build', gulp.series('clean', gulp.parallel('sass', 'webpack')));
+
+gulp.watch('./frontend/scss/**/*.scss', gulp.series('sass'));
+gulp.watch('./frontend/js/**/*.js', gulp.series('webpack'));
+
 gulp.task('browser-sync', () => {
   browserSync.init(null, {
     proxy: 'http://localhost:80',
     port: 7000
   });
   browserSync.watch('public/**/*.*').on('change', browserSync.reload);
-  // browserSync.watch('backend/views/**/*.pug').on('change', browserSync.reload);
-  // browserSync.watch('backend/**/*.js').on('change', () => {
-  //   ndstream.emit('restart');
-  // });
 });
 gulp.task('nodemon', () => {
-  ndstream = nodemon({ script: 'backend/app.js', watch: '/backend/', ext: 'js json pug' });
-  ndstream.on('restart', browserSync.reload);
+  nodemon({
+    script: 'backend/app.js',
+    watch: '/backend/',
+    ext: 'js json pug',
+    env: { NODE_ENV: 'development' }
+  }).on('restart', browserSync.reload);
 });
-gulp.task('dev', gulp.parallel('nodemon', 'browser-sync'));
-
-// gulp.task('views', () =>
-//   gulp
-//     .src('backend/views/partial/*.pug')
-//     .pipe(pug())
-//     .pipe(gulp.dest('public')),
-// );
+gulp.task('dev', gulp.series('build', gulp.parallel('nodemon', 'browser-sync')));
