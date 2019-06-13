@@ -1,6 +1,6 @@
 node_modules/
+.vscode/
 .idea/
 public/
 yarn.lock
 yarn-error.log
-openvpn-status.log
