@@ -1,0 +1,22 @@
+extends ../layout/default
+
+block content
+    link(rel='stylesheet', href='/public/css/auth.css')
+    //- link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+    div.row.align-items-center.justify-content-center
+        div.col-lg-4.col-sm-8
+            form.form-horizontal
+                span.heading Авторизация
+                div.form-group
+                    input(type="email", id="inputEmail" placeholder="E-mail").form-control
+                    i.fa.fa-user
+                div.form-group.help
+                    input(type="password", id="inputPassword" placeholder="Password").form-control
+                    i.fa.fa-lock
+                    a(href="#").fa.fa-question-circle
+                div.form-group
+                    div.main-checkbox
+                        input(type="checkbox", name="check", id="checkbox1", value='none')
+                        label(for="checkbox1")
+                    span.text Запомнить
+                    button(type="submit").btn.btn-default ВХОД

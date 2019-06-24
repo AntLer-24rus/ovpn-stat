@@ -11,7 +11,10 @@
   },
   "eslintConfig": {
     "root": true,
-    "extends": ["airbnb-base", "prettier"],
+    "extends": [
+      "airbnb-base",
+      "prettier"
+    ],
     "env": {
       "node": true
     }
@@ -45,6 +48,7 @@
     "chokidar": "^2.0.2",
     "express": "^4.16.2",
     "express-winston": "^2.5.0",
+    "font-awesome": "^4.7.0",
     "install": "^0.10.4",
     "jquery": "^3.3.1",
     "moment": "^2.20.1",

@@ -35,13 +35,20 @@ gulp.task('sass', () =>
     .src('./frontend/scss/**/*.scss')
     .pipe(
       sass({
-        includePaths: ['./node_modules/bootstrap/scss', 'frontend/scss']
+        includePaths: ['./node_modules/bootstrap/scss',
+                       './node_modules/font-awesome/scss',
+                       'frontend/scss']
       }).on('error', sass.logError)
     )
     .pipe(gulp.dest('./public/css'))
 );
 
 gulp.task('clean', () => del(['public']));
+
+gulp.task('fonts', function() {
+  return gulp.src('./node_modules/font-awesome/fonts/*')
+    .pipe(gulp.dest('public/fonts'))
+})
 
 gulp.task('webpack', () => {
   const options = {
@@ -71,7 +78,7 @@ gulp.task('webpack', () => {
     .pipe(gulp.dest('public/js'));
 });
 
-gulp.task('build', gulp.series('clean', gulp.parallel('sass', 'webpack')));
+gulp.task('build', gulp.series('clean', 'fonts', gulp.parallel('sass', 'webpack')));
 
 gulp.watch('./frontend/scss/**/*.scss', gulp.series('sass'));
 gulp.watch('./frontend/js/**/*.js', gulp.series('webpack'));

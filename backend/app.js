@@ -124,6 +124,11 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/auth', (req, res) => {
+  
+  res.render('auth-form');
+});
+
 app.get('/status', (req, res) => {
   ReadStat(content => {
     res.send(JSON.stringify(content));

@@ -30,7 +30,7 @@ module.exports.middlewareLogger = function middlewareLogger(labelName) {
       })
     ],
     meta: false,
-    msg: '{{req.method}} {{res.statusCode}} {{req.url}} {{res.responseTime}} ms',
+    msg: '{{req.method}} {{res.statusCode}} {{req.url}} {{req.body}} {{res.responseTime}} ms',
     colorize: true
   });
 };
