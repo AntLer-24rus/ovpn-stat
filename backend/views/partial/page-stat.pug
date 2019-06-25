@@ -2,8 +2,8 @@ extends ../layout/default
 
 block scripts
   //- script(src='public/js/jquery.min.js')
-  script(src='/socket.io/socket.io.js')
-  script(src='public/js/test.js')
+  //- script(src='/socket.io/socket.io.js')
+  script(src='public/js/status.js')
 
 block content
   h2 Последнее обновление #[span(id='udate') #{Update.date}] в: #[span(id='utime') #{Update.time}]

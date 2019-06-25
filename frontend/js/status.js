@@ -1,4 +1,8 @@
-const socket = io();
+import $ from 'jquery'
+import io from 'socket.io-client';
+
+const socket = io('http://localhost');
+
 socket.emit('msg', { data: 'запрос на сервер' });
 socket.on('msg', data => {
   console.log(data);
