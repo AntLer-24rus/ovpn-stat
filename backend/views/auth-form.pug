@@ -1,11 +1,15 @@
-extends ../layout/default
+extends layout/default
+
+block stylesheets
+    link(rel='stylesheet', href='/public/css/auth.css')
+
+block scripts
+  script(src='public/js/auth.js')
 
 block content
-    link(rel='stylesheet', href='/public/css/auth.css')
-    //- link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     div.row.align-items-center.justify-content-center
         div.col-lg-4.col-sm-8
-            form.form-horizontal
+            form#authForm.form-horizontal(action="javascript:alert( 'success!' );")
                 span.heading Авторизация
                 div.form-group
                     input(type="email", id="inputEmail" placeholder="E-mail").form-control

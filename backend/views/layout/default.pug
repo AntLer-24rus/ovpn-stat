@@ -2,9 +2,18 @@ html
   head
     title #{title}
     link(rel='stylesheet', href='/public/css/main.css')
-
-    block scripts
+    block stylesheets
+    //- link(rel='stylesheet', href='https://getbootstrap.com/docs/4.3/dist/css/bootstrap.min.css',integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T',crossorigin='anonymous')
+    
   body
+    
     include ../partial/navbar.pug
+    
     main.container-fluid(role='main')
       block content
+
+    block scripts
+    script(src='public/js/default.js')
+    //- script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js')
+    //- script(src='https://getbootstrap.com/docs/4.3/dist/js/bootstrap.bundle.min.js')
+    
