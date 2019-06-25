@@ -93,6 +93,7 @@ app.use(mwLog);
 // });
 
 io.on('connection', socket => {
+  log.debug(`Подключился клиент ${socket}`)
   const watcher = chokidar
     .watch(config.get('OpenVPN-StatPath'))
     .on('change', () => {
@@ -125,7 +126,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/auth', (req, res) => {
-  
+
   res.render('auth-form');
 });
 

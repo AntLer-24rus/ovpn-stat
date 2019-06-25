@@ -26,7 +26,7 @@ gulp.task('deploy', () =>
       })
     )
     .on('error', err => {
-      console.log(err);
+      global.console.log(err);
     })
 );
 
@@ -36,8 +36,8 @@ gulp.task('sass', () =>
     .pipe(
       sass({
         includePaths: ['./node_modules/bootstrap/scss',
-                       './node_modules/font-awesome/scss',
-                       'frontend/scss']
+          './node_modules/font-awesome/scss',
+          'frontend/scss']
       }).on('error', sass.logError)
     )
     .pipe(gulp.dest('./public/css'))
@@ -45,10 +45,8 @@ gulp.task('sass', () =>
 
 gulp.task('clean', () => del(['public']));
 
-gulp.task('fonts', function() {
-  return gulp.src('./node_modules/font-awesome/fonts/*')
-    .pipe(gulp.dest('public/fonts'))
-})
+gulp.task('fonts', () => gulp.src('./node_modules/font-awesome/fonts/*')
+  .pipe(gulp.dest('public/fonts')))
 
 gulp.task('webpack', () => {
   const options = {
@@ -65,10 +63,10 @@ gulp.task('webpack', () => {
     },
     plugins: [
       new webpackStream.webpack.NoEmitOnErrorsPlugin(),
-      new webpackStream.webpack.ProvidePlugin({
-        $: 'jquery/dist/jquery.min.js',
-        'window.$': 'jquery/dist/jquery.min.js'
-      })
+      // new webpackStream.webpack.ProvidePlugin({
+      //   $: 'jquery/dist/jquery.min.js',
+      //   'window.$': 'jquery/dist/jquery.min.js'
+      // })
     ]
   };
   return gulp
@@ -80,8 +78,7 @@ gulp.task('webpack', () => {
 
 gulp.task('build', gulp.series('clean', 'fonts', gulp.parallel('sass', 'webpack')));
 
-gulp.watch('./frontend/scss/**/*.scss', gulp.series('sass'));
-gulp.watch('./frontend/js/**/*.js', gulp.series('webpack'));
+
 
 gulp.task('browser-sync', () => {
   browserSync.init(null, {
@@ -98,4 +95,11 @@ gulp.task('nodemon', () => {
     env: { NODE_ENV: 'development' }
   }).on('restart', browserSync.reload);
 });
-gulp.task('dev', gulp.series('build', gulp.parallel('nodemon', 'browser-sync')));
+gulp.task('dev',
+  gulp.series('build',
+    gulp.parallel('nodemon',
+      'browser-sync',
+      () => {
+        gulp.watch('./frontend/scss/**/*.scss', gulp.series('sass'));
+        gulp.watch('./frontend/js/**/*.js', gulp.series('webpack'));
+      })));
