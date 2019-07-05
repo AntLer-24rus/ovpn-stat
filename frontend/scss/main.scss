@@ -6,3 +6,7 @@ body {
   // min-height: 75rem;
   padding-top: 4.5rem;
 }
+
+#logo {
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(82deg) brightness(105%) contrast(105%); // white
+}

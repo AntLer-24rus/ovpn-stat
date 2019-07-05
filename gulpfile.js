@@ -53,6 +53,12 @@ gulp.task(
     () => gulp.src('./node_modules/font-awesome/fonts/*')
               .pipe(gulp.dest('public/fonts')))
 
+gulp.task(
+    'images',
+    ()=> gulp.src('./frontend/images/*.*')
+    .pipe(gulp.dest('public/images'))
+)
+
 gulp.task('webpack', () => {
   const options = {
     // watch: true,
@@ -79,7 +85,7 @@ gulp.task('webpack', () => {
 });
 
 gulp.task(
-    'build', gulp.series('clean', 'fonts', gulp.parallel('sass', 'webpack')));
+    'build', gulp.series('clean', 'fonts', 'images', gulp.parallel('sass', 'webpack')));
 
 
 

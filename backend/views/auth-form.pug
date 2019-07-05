@@ -9,7 +9,7 @@ block scripts
 block content
     div.row.align-items-center.justify-content-center
         div.col-lg-4.col-sm-8
-            form#authForm.form-horizontal(action="javascript:alert( 'success!' );")
+            form#authForm.form-horizontal(onsubmit="return false")
                 span.heading Авторизация
                 div.form-group
                     input(type="email", id="inputEmail" placeholder="E-mail").form-control

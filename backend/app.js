@@ -18,6 +18,7 @@ const chokidar = require('chokidar');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+const crypto = require('crypto');
 
 const log = logger.logger(__filename);
 const mwLog = logger.middlewareLogger(
@@ -93,6 +94,9 @@ app.set('view engine', 'pug');
 // app.use(morgan('dev'));
 app.use(mwLog);
 
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
 // fs.watchFile(config.get('OpenVPN-StatPath'), () => {
 //   log.debug('Файл изменился');
 // });
@@ -133,6 +137,38 @@ app.get('/', (req, res) => {
 
 app.get('/auth', (req, res) => {
   res.render('auth-form');
+});
+
+app.post('/login/:numStep', (req, res, next) => {
+
+
+  let pass = crypto.createHash('sha256').update('test@main.ru:123456').digest('hex');
+  log.debug(pass);
+
+
+  switch (req.params.numStep) {
+    case "1":
+      if('arg' in req.body) {
+        let rnd = crypto.randomBytes(32).toString('hex');
+        let iv = crypto.randomBytes(16);
+
+        log.debug(`RND = ${rnd} iv = ${iv.toString('hex')}`);
+        log.debug(iv)
+        let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(pass,"hex"), iv);
+        let encryptedData = Buffer.concat([cipher.update(rnd), cipher.final()]);
+        
+        log.debug(`encryptedData = ${encryptedData.toString('base64')} length: ${encryptedData.length}`);
+        
+        let out = Buffer.concat([encryptedData, iv]);
+        res.send({ans: out.toString('base64')});
+      }
+        
+      break;
+  
+    default:
+      next(new HttpEror(403, 'Достап запрещен!!!'));//Неверный номер шага
+      break;
+  }  
 });
 
 app.get('/status', (req, res) => {

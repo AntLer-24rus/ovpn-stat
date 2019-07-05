@@ -46,6 +46,7 @@
     "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0",
     "chokidar": "^2.0.2",
+    "crypto-js": "^3.1.9-1",
     "express": "^4.16.2",
     "express-winston": "^2.5.0",
     "font-awesome": "^4.7.0",
