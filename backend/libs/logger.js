@@ -8,7 +8,7 @@ module.exports.logger = function getLogger(filename) {
   const pathToModule = filename
     .split(path.sep)
     .slice(-2)
-    .join(path.sep);
+    .join('/');
   return new winston.Logger({
     transports: [
       new winston.transports.Console({

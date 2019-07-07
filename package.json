@@ -48,6 +48,7 @@
     "chokidar": "^2.0.2",
     "crypto-js": "^3.1.9-1",
     "express": "^4.16.2",
+    "express-session": "^1.16.2",
     "express-winston": "^2.5.0",
     "font-awesome": "^4.7.0",
     "install": "^0.10.4",
