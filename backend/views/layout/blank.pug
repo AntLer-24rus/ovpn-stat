@@ -1,0 +1,18 @@
+html
+  head
+    title #{title}
+    link(rel='stylesheet', href='/public/css/main.css')
+    block stylesheets
+    //- link(rel='stylesheet', href='https://getbootstrap.com/docs/4.3/dist/css/bootstrap.min.css',integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T',crossorigin='anonymous')
+    
+  body
+    
+    
+    main.container-fluid(role='main')
+      block content
+
+    block scripts
+    
+    //- script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js')
+    //- script(src='https://getbootstrap.com/docs/4.3/dist/js/bootstrap.bundle.min.js')
+    
