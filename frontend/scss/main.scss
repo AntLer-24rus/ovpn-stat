@@ -1,5 +1,4 @@
-@import 'bootstrap.scss';
-// @import '_navbar.scss';
+@import "../../node_modules/bootstrap/scss/bootstrap";
 
 /* Show it is fixed to the top */
 body {
@@ -8,5 +7,6 @@ body {
 }
 
 #logo {
-  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(82deg) brightness(105%) contrast(105%); // white
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(82deg) brightness(105%)
+    contrast(105%); // white
 }

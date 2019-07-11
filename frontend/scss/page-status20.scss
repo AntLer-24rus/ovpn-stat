@@ -1,0 +1,36 @@
+// @import "../../node_modules/bootstrap/scss/variables";
+// @import "../../node_modules/bootstrap/scss/mixins";
+
+// @import "../../node_modules/bootstrap/scss/bootstrap";
+
+// Required
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+@import "../../node_modules/bootstrap/scss/mixins";
+
+.card {
+  min-width: 240px;
+}
+
+@media (min-width: 576px) and (max-width: 809.98px) {
+  .card {
+    max-width: 45%;
+  }
+}
+
+@media (min-width: 810px) and (max-width: 1079.98px) {
+  .card {
+    max-width: 29.5%;
+  }
+}
+
+@media (min-width: 1080px) {
+  .card {
+    max-width: 22.5%;
+  }
+}
+@media (min-width: 1350px) {
+  .card-deck {
+    max-width: 1349px;
+  }
+}
