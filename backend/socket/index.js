@@ -7,11 +7,13 @@ const chokidar = require("chokidar");
 
 const log = logger.logger(__filename);
 
+let clientCount = 0;
+
 module.exports = server => {
   const io = SocketIO(server);
 
   io.on("connection", socket => {
-    log.debug(`Подключился клиент ${socket}`);
+    log.debug(`Подключился клиент ${socket.client.id} (${++clientCount})`);
     const watcher = chokidar
       .watch(config.get("OpenVPN-StatPath"))
       .on("change", () => {
@@ -26,6 +28,7 @@ module.exports = server => {
       });
 
     socket.on("disconnect", () => {
+      log.debug(`Клиент ${socket.client.id} отключился (${--clientCount})`);
       watcher.unwatch();
       log.debug("Закончилось отслеживание файла");
     });

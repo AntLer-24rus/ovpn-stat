@@ -103,7 +103,11 @@ gulp.task(
 );
 
 gulp.task("browser-sync", () => {
-  browserSync.init(null, { proxy: "http://localhost:80", port: 7000 });
+  browserSync.init(null, {
+    proxy: "http://localhost:80",
+    reloadDelay: 2000,
+    port: 7000
+  });
   browserSync.watch("public/**/*.*").on("change", browserSync.reload);
 });
 gulp.task("nodemon", () => {
