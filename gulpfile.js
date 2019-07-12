@@ -20,7 +20,6 @@ gulp.task("deploy", () =>
         host: "antler24.ru",
         port: 20531,
         username: "git",
-        // password: 'git205317',
         publicKey: fs.readFileSync("../../.ssh/id_rsa.pub", "UTF-8"),
         privateKey: fs.readFileSync("../../.ssh/id_rsa", "UTF-8"),
         dest: "ovpn-stat"
