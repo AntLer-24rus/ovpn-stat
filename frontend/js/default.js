@@ -1,7 +1,9 @@
-import $ from 'jquery';
-import 'popper.js';
-// import '../../node_modules/bootstrap/js/dist';
-import 'bootstrap';
+import jQuery from "jquery";
+import "popper.js";
+import "bootstrap";
 
-// eslint-disable-next-line no-unused-vars
-// const jQuery = $;
+const $ = jQuery;
+console.log(`Bootstrap version ${$.fn.tooltip.Constructor.VERSION}`);
+console.log(`jQuery version ${$.fn.jquery}`);
+
+// import "../../node_modules/bootstrap/js/dist/index.js";

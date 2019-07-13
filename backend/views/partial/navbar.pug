@@ -1,9 +1,11 @@
-nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark(role = 'navigation')
-    a.navbar-brand(href='#')
+nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+    a.navbar-brand(href='/')
         img#logo.d-inline-block.align-top(src="public/images/antler.svg", height=30, alt="")
         |AntLer
     button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNav', aria-controls='navbarNav', aria-expanded='false', aria-label='Toggle navigation')
         span.navbar-toggler-icon
+    
+    
     div.collapse.navbar-collapse(id='navbarNav')
         ul.navbar-nav.mr-auto
             li.nav-item(class= path == '/' ? 'active' : '')
@@ -11,5 +13,8 @@ nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark(role = 'navigation')
             li.nav-item(class= path == '/status' ? 'active' : '')
                 a.nav-link(href='/status') Статистика сети
             li.nav-item(class= path == '/invoices' ? 'active' : '')
-                a.nav-link(href='/invoices') Счета
-    a.btn.btn-outline-primary(href='#') Выйти
+                a.nav-link(href='/invoices') Счета-фактуры
+                    
+            //- li.nav-item
+            //-     a.nav-link(href='/status') Статистика сети
+        a.btn.btn-outline-primary(href='#') Выйти

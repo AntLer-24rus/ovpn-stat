@@ -1,0 +1,26 @@
+extends layout/default
+
+block stylesheets
+  link(rel='stylesheet', href='/public/css/page-status20.css')
+
+block scripts
+  script(src='public/js/status.js')
+
+block content
+  h3.text-center Список клиентов
+  .center
+    .card-deck
+      each row in ClientList
+        .card.mb-3
+          .card-header
+            h5.card-title #{row.CommonName}
+            h6.card-subtitle.text-muted #{row.RealAddress}:#{row.RealPort}
+          .card-body.pb-1
+            p.card-text Передано: #{row.BytesSent} Кб. <br/> Получено: #{row.BytesReceived} Кб.
+            h6.card-subtitle Cписок ip:
+          ul.list-group.list-group-flush
+            each rowIP in row.VirtualAddresses
+              li.list-group-item 
+                a.card-link(href=`http://${rowIP.ip}`) #{rowIP.ip}
+                p.card-text.text-muted #{rowIP.LastRef}            
+          .card-footer.text-muted #{row.ConnectedSince}

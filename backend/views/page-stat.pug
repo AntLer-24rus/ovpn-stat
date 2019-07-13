@@ -7,10 +7,10 @@ block scripts
 
 block content
   dev.row.justify-content-center
-    dev.col-lg-8
+    dev.col-lg-9
       h2 Последнее обновление #[span(id='udate') #{Update.date}] в: #[span(id='utime') #{Update.time}]
       h3 Список клиентов
-      table.table.table-hover(id='client')
+      //- table.table.table-hover(id='client')
         thead
           tr
             th(scope='col') Имя
@@ -26,8 +26,8 @@ block content
               td #{row.BytesReceived}
               td #{row.BytesSent}
               td #{row.ConnectedSince}
-      h3 Таблица маршрутов
-      table.table.table-hover(id='routing')
+      //- h3 Таблица маршрутов
+      //- table.table.table-hover(id='routing')
         thead
           tr
             th(scope='col') Виртуальный адрес
@@ -41,3 +41,33 @@ block content
               td #{row.CommonName}
               td #{row.RealAddress}:#{row.RealPort}
               td #{row.LastRef}
+      //- h3 Новая таблица
+      table.table(id='new')
+        thead
+          tr
+            th(scope='col', rowspan="2") Имя
+            th(scope='col', rowspan="2") Реальный адрес
+            th(scope='col', colspan="2") Виртуальные адреса
+            th(scope='col', rowspan="2") Принято
+            th(scope='col', rowspan="2") Передано
+            th(scope='col', rowspan="2") Подключился
+          tr
+            th IP
+            th Обновлено
+        tbody
+          each row in ClientList
+            tr
+              td(rowspan=`${row.VirtualAddresses.length}`) #{row.CommonName}
+              td(rowspan=`${row.VirtualAddresses.length}`) #{row.RealAddress}:#{row.RealPort}
+              
+              td #{row.VirtualAddresses[0].ip}
+              td #{row.VirtualAddresses[0].LastRef}
+                    
+              td(rowspan=`${row.VirtualAddresses.length}`) #{row.BytesReceived}
+              td(rowspan=`${row.VirtualAddresses.length}`) #{row.BytesSent}
+              td(rowspan=`${row.VirtualAddresses.length}`) #{row.ConnectedSince}
+              //- each rowIP in row.VirtualAddresses
+              - for (var i = 1; i < row.VirtualAddresses.length; i++)
+                tr
+                  td #{row.VirtualAddresses[i].ip}
+                  td #{row.VirtualAddresses[i].LastRef}

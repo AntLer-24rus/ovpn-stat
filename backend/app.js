@@ -10,11 +10,9 @@ const HttpEror = require('./libs/httpError');
 
 const path = require('path');
 
-const chokidar = require('chokidar');
-
 const app = express();
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
+require('./socket')(server);
 const router = require('./routes');
 
 const log = logger.logger(__filename);
@@ -26,7 +24,7 @@ app.set('view engine', 'pug');
 // Логирование
 app.use(mwLog);
 
-app.use(express.json()); // for parsing application/json
+app.use(express.json()); // TODO: Body-parcer?? // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.use(
@@ -36,27 +34,6 @@ app.use(
     httpOnly: true
   })
 );
-
-io.on('connection', socket => {
-  log.debug(`Подключился клиент ${socket}`);
-  const watcher = chokidar
-    .watch(config.get('OpenVPN-StatPath'))
-    .on('change', () => {
-      log.debug('Файл обновился, читаю изменения...');
-      ReadStat(data => {
-        log.debug('Отправка изменений клиенту');
-        socket.emit('stat-change', data);
-      });
-    })
-    .on('ready', () => {
-      log.debug('Началось отслеживание файла');
-    });
-
-  socket.on('disconnect', () => {
-    watcher.unwatch();
-    log.debug('Закончилось отслеживание файла');
-  });
-});
 
 // Отдача статики
 app.use('/public', express.static(path.join(__dirname, '../public')));
