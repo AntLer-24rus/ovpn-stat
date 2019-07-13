@@ -1,5 +1,18 @@
-@import 'bootstrap.scss';
+// @import './variablesCustome';
+
+// Variable Overrides
+$theme-colors: (
+  'primary': #d95700
+);
+
+$grid-columns: 14 !default;
+
+@import '../../node_modules/bootstrap/scss/bootstrap.scss';
 // @import '_navbar.scss';
+
+.container-fluid {
+  min-width: 1100px;
+}
 
 /* Show it is fixed to the top */
 body {

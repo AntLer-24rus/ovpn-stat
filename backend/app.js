@@ -64,6 +64,11 @@ app.use('/public', express.static(path.join(__dirname, '../public')));
 app.use('/auth', router.auth);
 app.use('/status', router.status);
 
+app.get('/invoices', (req, res) => {
+  res.locals.path = '/invoices';
+  res.render('Invoices');
+});
+
 app.get('/', (req, res) => {
   res.locals.path = '/';
   res.render('main');

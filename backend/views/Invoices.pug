@@ -1,0 +1,23 @@
+extends layout/default
+
+block stylesheets
+  link(rel='stylesheet', href='public/css/invoices.css')
+
+block content
+  .row.justify-content-center
+    .col-12
+      .row.justify-content-center
+        .col-2.border Понедельник
+        .col-2.border Вторник
+        .col-2.border Среда
+        .col-2.border Четверг
+        .col-2.border Пятница
+        .col-2.border Суббота
+        .col-2.border Воскресенье
+        - var day = 1;
+      - for (var x = 1; x <= 5; x++)
+        .row.justify-content-center
+          - for (var y = 1; y <= 7; y++)
+            .col-2.border
+              h3 #{day++}
+              p 193 246,25 руб.
